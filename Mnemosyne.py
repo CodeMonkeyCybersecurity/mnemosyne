@@ -26,4 +26,4 @@ def upload_logs():
     return "Log uploaded successfully.", 200
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(host='::', port=5000)
