@@ -7,22 +7,6 @@ app = Flask(__name__)
 
 LOG_DIR = "/var/log/cybermonkey-received-logs"
 
-# Load configuration from ssl.json
-def load_ssl_config():
-    with open('ssl.json', 'r') as config_file:
-        return json.load(config_file)
-
-if __name__ == '__main__':
-    ssl_config = load_ssl_config()
-    ssl_cert = ssl_config.get("ssl_cert")
-    ssl_key = ssl_config.get("ssl_key")
-    
-    if ssl_cert and ssl_key:
-        # Enable IPv6 by binding to '::'
-        app.run(host='::', port=443, ssl_context=(ssl_cert, ssl_key))
-    else:
-        print("SSL certificate or key not found in ssl.json.")
-
 @app.route('/upload_logs', methods=['POST'])
 def upload_logs():
     if 'logfile' not in request.files:
@@ -41,3 +25,7 @@ def upload_logs():
     logfile.save(save_path)
     
     return "Log uploaded successfully.", 200
+
+if __name__ == '__main__':
+    # Listen on port 5000 without SSL (for Nginx to forward traffic)
+    app.run(host='::', port=5000)  # HTTP on port 5000
